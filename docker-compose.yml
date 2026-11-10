@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  router-bot:
+    build: .
+    container_name: router_bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Раскомментируйте строку ниже, если понадобятся детальные системные логи Playwright
+      # - DEBUG=pw:api
+
+      - TARGET_URL=${ROUTER_URL}
+      - USERNAME=${ROUTER_USERNAME}
+      - PASSWORD=${ROUTER_PASSWORD}
+    volumes:
+      # 1. Монтируем сам скрипт: любые изменения в файле на сервере мгновенно применяются внутри контейнера без пересборки!
+      - ./main.py:/app/main.py
+      # 2. Папка для логов
+      - /var/log/router-bot:/log
